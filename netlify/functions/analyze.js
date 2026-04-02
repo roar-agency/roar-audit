@@ -1,4 +1,4 @@
- const ipRequests = {};
+const ipRequests = {};
 const LIMIT = 10;
 const WINDOW_MS = 3600000;
 
@@ -89,6 +89,14 @@ function detectFromHTML(html) {
   const h2s = [...html.matchAll(/<h2[^>]*>([^<]{3,80})<\/h2>/gi)].map(m => m[1].replace(/<[^>]+>/g,'').trim()).slice(0,5);
   const schemaM = html.match(/"@type"\s*:\s*"([A-Za-z]+)"/g);
 
+  // Trustpilot et widgets avis
+  if (hl.includes('widget.trustpilot.com') || hl.includes('trustpilot') || hl.includes('tp-widget')) d.trustpilot = 'présent';
+  if (hl.includes('avis-verifies') || hl.includes('avisverifies')) d.avisVerifies = 'présent';
+  if (hl.includes('google.com/maps/embed') || hl.includes('maps/api/js') || hl.includes('place_id')) d.googleReviews = 'signaux détectés';
+  if (hl.includes('judge.me') || hl.includes('judgeme')) d.judgeme = 'présent';
+  if (hl.includes('yotpo') || hl.includes('yotpo.com')) d.yotpo = 'présent';
+  if (hl.includes('okendo') || hl.includes('stamped.io') || hl.includes('loox.io')) d.autresAvis = 'présent';
+
   d._content = {
     title: titleM ? titleM[1].trim() : '',
     h1: h1M ? h1M[1].replace(/<[^>]+>/g,'').trim() : '',
@@ -96,7 +104,7 @@ function detectFromHTML(html) {
     h2s: h2s,
     hasFaq: /faq|foire aux questions|questions fr.quentes/i.test(html),
     schemaTypes: schemaM ? [...new Set(schemaM.map(s => s.match(/"([A-Za-z]+)"/g)[1].replace(/"/g,'')))].join(', ') : '',
-    hasReviews: /trustpilot|avis verifi|review|rating/i.test(html),
+    hasReviews: /trustpilot|widget\.trustpilot|avis.verifi|review|rating|judge\.me|yotpo|loox/i.test(html),
     hasCart: /panier|cart|checkout/i.test(html),
     internalLinks: (html.match(/href=["'][^"'#][^"']*["']/g)||[]).length,
   };
@@ -131,6 +139,9 @@ function mergeUrlscanData(htmlTech, urlscanData) {
     'axeptio': () => { merged.rgpd = merged.rgpd || 'axeptio'; },
     'onetrust': () => { merged.rgpd = merged.rgpd || 'onetrust'; },
     'shopify': () => { merged.cms = merged.cms || 'Shopify'; },
+    'trustpilot': () => { merged.trustpilot = merged.trustpilot || 'détecté (urlscan)'; },
+    'yotpo': () => { merged.yotpo = merged.yotpo || 'détecté (urlscan)'; },
+    'okendo': () => { merged.autresAvis = merged.autresAvis || 'détecté (urlscan)'; },
     'prestashop': () => { merged.cms = merged.cms || 'PrestaShop'; },
     'woocommerce': () => { merged.cms = merged.cms || 'WordPress/WooCommerce'; },
   };
