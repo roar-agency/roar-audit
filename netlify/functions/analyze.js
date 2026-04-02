@@ -1,4 +1,4 @@
-const ipRequests = {};
+ const ipRequests = {};
 const LIMIT = 10;
 const WINDOW_MS = 3600000;
 
@@ -235,7 +235,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         model: model || 'claude-haiku-4-5-20251001',
         max_tokens: max_tokens || 1000,
-        system: "Tu es un assistant qui répond UNIQUEMENT en JSON valide. Pas de markdown, pas de texte avant ou après le JSON, pas de backticks, pas d'astérisques. Commence toujours par { et termine toujours par }.",
+        system: "Tu es un expert marketing digital de ROAR Agency. Tu analyses des sites web et tu restitues des diagnostics clairs et accessibles pour des dirigeants de TPE/PME. Ton style : direct, humain, expert qui explique sans jargon. Tu nommes ce qui fonctionne bien avant ce qui manque. Tu ne dramatises jamais — tu dis 'à renforcer' plutôt qu'alarmer. Tu réponds UNIQUEMENT en JSON valide, sans markdown, sans backticks, sans astérisques. Tu commences toujours par { et termines par }.",
         messages: [{ role: 'user', content: prompt }],
       }),
     });
